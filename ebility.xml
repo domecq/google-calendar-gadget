@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
   <ModulePrefs
-     title="Ebility gadet"
+     title="Ebility gadget"
      height="500"
      description="Time tracker"
      author="Nicolás Peralta"
@@ -149,12 +149,13 @@ function render_projects(obj) {
       firm_name = firms[i].FirmName["#text"];
       // look for the firm id
       if ($(this).val() == firm_id) {
-        // the data is in clientProjects
+        // get the project
         projects = firms[i].ClientProjects;
 
-        // check if it's not empty
+        // check if it's not empty (projects)
         if (projects.MobileClientProject) {
           mobile_project = projects.MobileClientProject;
+          // make the project's options
           for (var j = 0 ; j < mobile_project.length; j++) {
             client_id = mobile_project[j].ClientId["#text"];
             client_name = mobile_project[j].ClientProjectName["#text"];
@@ -162,8 +163,37 @@ function render_projects(obj) {
           };
 
         }
+
+        // render
         $('#projects').html(html);
+
+        // log projects
         console.log(projects);
+
+        // empty html
+        html = '';
+        // get activity
+        activities = firms[i].ActivityType;
+
+        // check if it's not empty (activities)
+        if (activities.MobileActivityType) {
+          mobile_activity = activities.MobileActivityType;
+          // make the project's options
+          for (var k = 0 ; k < mobile_activity.length; k++) {
+            activity_id = mobile_activity[k].ActivityTypeId["#text"];
+            activity_name = mobile_activity[k].ActivityTypeName["#text"];
+            html += '<option value=' + activity_id + '>' + activity_name + '</option>';
+          };
+
+        }
+
+        // render
+        $('#activities').html(html);
+
+        // log projects
+        console.log(activities);
+
+
       }
 
     };
