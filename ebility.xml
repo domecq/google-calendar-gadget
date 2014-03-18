@@ -88,6 +88,8 @@ function get_projects(session_id, user_id, callback) {
 }
 
 function makePOSTRequest(url, postdata, callback) {
+  console.log(url);
+  console.log(postdata);
   var params = {};
   postdata = gadgets.io.encodeValues(postdata);
   console.log(postdata);
@@ -97,8 +99,16 @@ function makePOSTRequest(url, postdata, callback) {
 
 };
 
+var mobile_sync_data;
+
 function render_projects(obj) {
-  console.log(obj);
+  var mobile_sync_data = xmlToJson(stringToXML(obj.data));
+  var html = '' ;
+  html += '<select id=firms>';
+
+  html += '</select>';
+
+  console.log(mobile_sync_data);
 }
 
 </script>
@@ -112,11 +122,10 @@ function render_projects(obj) {
     <div class="well">
       <script>
         // login user and render selects
-        login("username", "password", function(obj) {
-          // console.log(stringToXML(obj.data));
+        login("usr", "pass", function(obj) {          
           var json_data  = xmlToJson(stringToXML(obj.data));
-          var session_id = json_data.SessionId;
-          var user_id    = json_data.UserId;
+          var session_id = json_data.MobileLoginResponse.SessionId["#text"];
+          var user_id    = json_data.MobileLoginResponse.UserId["#text"];
           get_projects(session_id, user_id, render_projects);
 
         });
