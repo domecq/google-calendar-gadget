@@ -66,6 +66,9 @@ input.datepicker,input.input-small {
   width: 140px;
 }
 
+#button-next {
+  color: white !important;
+}
 
 </style>
 <script>
@@ -227,11 +230,11 @@ function render_projects(obj) {
       }
 
     };
-        //html += '<option value=' + firm_id + '>' + firm_name + '</option>';
 
   });
 
 }
+
 
 function today () {
 
@@ -261,7 +264,7 @@ function today () {
     </div>
     <div class="well">
       <label>Date</label>
-      <input class="datepicker" data-date-format="mm/dd/yyyy" id="date">
+      <input class="datepicker" data-date-format="mm/dd/yyyy" id="task-date">
       <label>Start time</label>
       <div class="input-append bootstrap-timepicker">
         <input id="timepicker1" type="text" class="input-small">
@@ -272,7 +275,7 @@ function today () {
         <input id="timepicker2" type="text" class="input-small">
         <span class="add-on"><i class="icon-time"></i></span>
       </div>
-      <a href="#" class="btn btn-primary btn-default">Next <span class="glyphicon glyphicon-chevron-right"></span></a>
+      <a href="javascript: compose();" class="btn btn-primary btn-default" id="button-next">Next <span class="glyphicon glyphicon-chevron-right"></span></a>
     </div>
 
 </div>
@@ -297,6 +300,34 @@ $(function(){
   $('#timepicker2').timepicker();
 
 });
+
+  function compose(){
+    console.log('buttonnnn');
+    var date       = $('#task-date').val().split("\/");
+    var start_time = $('#timepicker1').val().split("\/");
+    var end_time   = $('#timepicker2').val().split("\/");
+
+    var eventData = {
+      title: $("#projects option:selected" ).text() + ' ' + $("#activities option:selected" ).text() ,
+      details: 'This is an ebility task of ' + $("#firms option:selected" ).text(),
+      location: 'Somewhere',
+      startTime: {year: date[2], month: date[0], date: date[1], hour: start_time[0], minute: start_time[1]},
+
+      // Within the data model, the end time is EXCLUSIVE. So the endTime MUST
+      // be on the day after the start time.
+      endTime: {year: date[2], month: date[0], date: date[1], hour: end_time[0], minute: end_time[1]},
+
+      // Note that attendees MUST be sent in contact format.
+      attendees: [
+        {email: 'nperalta@gmail.com'}
+      ],
+
+  // For more RRULE examples, please see http://www.ietf.org/rfc/rfc2445.txt
+      rrule: 'RRULE:FREQ=YEARLY'
+    };
+    google.calendar.composeEvent(eventData);
+  }
+
 
 </script>    
 ]]></Content>
