@@ -81,6 +81,12 @@ function login(username, password, callback) {
   makePOSTRequest("http://qa.ebillity.com/restservice/api/mobile/validateuser", data, callback); 
 }
 
+function get_projects(session_id, user_id, callback) {
+  var data = { "UserId" : user_id, "SessionId" : session_id, "LastSyncedOn" : "2014-01-01 17:15:45", "ResetSync" : false };
+  var post_url = "http://qa.ebillity.com/restservice/api/mobile/SyncData";
+  makePOSTRequest(post_url, data, callback);   
+}
+
 function makePOSTRequest(url, postdata, callback) {
   var params = {};
   postdata = gadgets.io.encodeValues(postdata);
@@ -89,16 +95,10 @@ function makePOSTRequest(url, postdata, callback) {
   params[gadgets.io.RequestParameters.POST_DATA]= postdata;
   gadgets.io.makeRequest(url, callback, params); 
 
-  // function response(obj) {
-  //   callback(obj);
-  // };
-
 };
 
-function renderSelects(obj) {
+function render_projects(obj) {
   console.log(obj);
-  // console.log(stringToXML(obj.data));
-  console.log(xmlToJson(stringToXML(obj.data)));
 }
 
 </script>
@@ -112,7 +112,14 @@ function renderSelects(obj) {
     <div class="well">
       <script>
         // login user and render selects
-        login("username", "password", renderSelects);
+        login("username", "password", function(obj) {
+          // console.log(stringToXML(obj.data));
+          var json_data  = xmlToJson(stringToXML(obj.data));
+          var session_id = json_data.SessionId;
+          var user_id    = json_data.UserId;
+          get_projects(session_id, user_id, render_projects);
+
+        });
 
       </script>
     </div>
