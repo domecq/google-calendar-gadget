@@ -2,7 +2,7 @@
 <Module>
   <ModulePrefs
      title="Ebility gadet"
-     height="61"
+     height="500"
      description="Time tracker"
      author="Nicolás Peralta"
      author_email="nperalta@gmail.com">
@@ -24,6 +24,20 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
+<style>
+#gadgetcell {
+  width: 175px !important;
+}
+.container {
+  padding: 0 !important;  
+}
+.col-md-1 {
+  padding: 0 !important;  
+}
+.well {
+  padding: 9px !important;
+}
+</style>
 <script>
 
 function stringToXML(str) {
@@ -104,10 +118,27 @@ var mobile_sync_data;
 function render_projects(obj) {
   var mobile_sync_data = xmlToJson(stringToXML(obj.data));
   var html = '' ;
-  html += '<select id=firms>';
+  var firms = mobile_sync_data.MobileSyncData.Firms.Firm;
+  html += '<label>Firm</label>';
+  html += '<select id=firms class=form-control>';
+  
+  for (var i = 0; i < firms.length; i++) {
+    firm_id = firms[i].FirmId["#text"];
+    firm_name = firms[i].FirmName["#text"];
+    html += '<option value=' + firm_id + '>' + firm_name + '</option>';
+  };
 
-  html += '</select>';
+  html += '</select><br>';
 
+  html += '<label>Project</label>';
+  html += '<select id=projects class=form-control>';
+  html += '</select><br>';  
+
+  html += '<label>Activity</label>';
+  html += '<select id=activities class=form-control>';
+  html += '</select><br>';  
+
+  $('#project-info').html(html);
   console.log(mobile_sync_data);
 }
 
@@ -117,25 +148,14 @@ function render_projects(obj) {
 <body>
 
 <div class="container">
-  <div class="col-md-1">
 
-    <div class="well">
-      <script>
-        // login user and render selects
-        login("usr", "pass", function(obj) {          
-          var json_data  = xmlToJson(stringToXML(obj.data));
-          var session_id = json_data.MobileLoginResponse.SessionId["#text"];
-          var user_id    = json_data.MobileLoginResponse.UserId["#text"];
-          get_projects(session_id, user_id, render_projects);
+    <div class="well" id="project-info">
+    hey this is something
 
-        });
-
-      </script>
     </div>
     <div class="well">
 
     </div>
-  </div>
 
 </div>
 <script>
@@ -143,7 +163,14 @@ function render_projects(obj) {
 // Force the screen to resize
 // gadgets.window.adjustHeight();
 
+// login user and render selects
+login("ajsri77@gmail.com", "Sriram0304", function(obj) {          
+  var json_data  = xmlToJson(stringToXML(obj.data));
+  var session_id = json_data.MobileLoginResponse.SessionId["#text"];
+  var user_id    = json_data.MobileLoginResponse.UserId["#text"];
+  get_projects(session_id, user_id, render_projects);
 
+});
 
 </script>    
 ]]></Content>
