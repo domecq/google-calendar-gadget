@@ -2,7 +2,8 @@
 <Module>
   <ModulePrefs
      title="Ebility gadget"
-     height="500"
+     height="700"
+     width="170"
      description="Time tracker"
      author="Nicolás Peralta"
      author_email="nperalta@gmail.com">
@@ -18,11 +19,27 @@
 <!-- Optional theme -->
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 
-
+<!-- jquery -->
 <script src="//code.jquery.com/jquery-latest.min.js"></script>
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+<!-- bootstrap datepicker -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+
+<!-- bootstrap datepicker CSS -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css">
+
+<!-- bootstrap timepicker CSS -->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.timepicker/0.2.3/css/bootstrap-timepicker.min.css">
+
+<!-- bootstrap timepicker -->
+<script src="//cdn.jsdelivr.net/bootstrap.timepicker/0.2.3/js/bootstrap-timepicker.min.js"></script>
+
+
+
+
 
 <style>
 #gadgetcell {
@@ -35,8 +52,21 @@
   padding: 0 !important;  
 }
 .well {
-  padding: 9px !important;
+  padding: 6px !important;
+  margin-top: -4px !important;
 }
+.table-condensed {
+  font-size: 10px !important;
+}
+.datepicker {
+  left: 0 !important;
+}
+
+input.datepicker,input.input-small {
+  width: 140px;
+}
+
+
 </style>
 <script>
 
@@ -202,6 +232,22 @@ function render_projects(obj) {
   });
 
 }
+
+function today () {
+
+  var d = new Date();
+
+  var month = d.getMonth()+1;
+  var day = d.getDate();
+
+  var output = d.getFullYear() + '/' +
+    (month<10 ? '0' : '') + month + '/' +
+    (day<10 ? '0' : '') + day;
+
+  return output;
+}
+
+
 </script>
 </head>
 
@@ -214,7 +260,19 @@ function render_projects(obj) {
 
     </div>
     <div class="well">
-
+      <label>Date</label>
+      <input class="datepicker" data-date-format="mm/dd/yyyy" id="date">
+      <label>Start time</label>
+      <div class="input-append bootstrap-timepicker">
+        <input id="timepicker1" type="text" class="input-small">
+        <span class="add-on"><i class="icon-time"></i></span>
+      </div>
+      <label>End time</label>
+      <div class="input-append bootstrap-timepicker">
+        <input id="timepicker2" type="text" class="input-small">
+        <span class="add-on"><i class="icon-time"></i></span>
+      </div>
+      <a href="#" class="btn btn-primary btn-default">Next <span class="glyphicon glyphicon-chevron-right"></span></a>
     </div>
 
 </div>
@@ -229,6 +287,14 @@ login("ajsri77@gmail.com", "Sriram0304", function(obj) {
   var session_id = json_data.MobileLoginResponse.SessionId["#text"];
   var user_id    = json_data.MobileLoginResponse.UserId["#text"];
   get_projects(session_id, user_id, render_projects);
+
+});
+
+$(function(){
+
+  $('.datepicker').datepicker();
+  $('#timepicker1').timepicker();
+  $('#timepicker2').timepicker();
 
 });
 
