@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs
+     title="Ebility gadet"
+     height="61"
+     description="Time tracker"
+     author="Nicolás Peralta"
+     author_email="nperalta@gmail.com">
+    <Require feature="google.calendar-0.5"/>
+    <Require feature="dynamic-height"/>
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+
+
+<script src="//code.jquery.com/jquery-latest.min.js"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+<script>
+
+function stringToXML(str) {
+  //code for IE
+  if (window.ActiveXObject) { 
+   var o_xml = new ActiveXObject("Microsoft.XMLDOM"); o_xml.loadXML(str);
+    return o_xml;
+  }
+  // code for Chrome, Safari, Firefox, Opera, etc. 
+  else {
+    return (new DOMParser()).parseFromString(str, "text/xml");
+  }
+}
+// Changes XML to JSON
+function xmlToJson(xml) {
+  
+  // Create the return object
+  var obj = {};
+
+  if (xml.nodeType == 1) { // element
+    // do attributes
+    if (xml.attributes.length > 0) {
+    obj["@attributes"] = {};
+      for (var j = 0; j < xml.attributes.length; j++) {
+        var attribute = xml.attributes.item(j);
+        obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+      }
+    }
+  } else if (xml.nodeType == 3) { // text
+    obj = xml.nodeValue;
+  }
+
+  // do children
+  if (xml.hasChildNodes()) {
+    for(var i = 0; i < xml.childNodes.length; i++) {
+      var item = xml.childNodes.item(i);
+      var nodeName = item.nodeName;
+      if (typeof(obj[nodeName]) == "undefined") {
+        obj[nodeName] = xmlToJson(item);
+      } else {
+        if (typeof(obj[nodeName].push) == "undefined") {
+          var old = obj[nodeName];
+          obj[nodeName] = [];
+          obj[nodeName].push(old);
+        }
+        obj[nodeName].push(xmlToJson(item));
+      }
+    }
+  }
+  return obj;
+};
+
+function login(username, password, callback) { 
+  var data = { UserName: username, Password: password };
+  makePOSTRequest("http://qa.ebillity.com/restservice/api/mobile/validateuser", data, callback); 
+}
+
+function makePOSTRequest(url, postdata, callback) {
+  var params = {};
+  postdata = gadgets.io.encodeValues(postdata);
+  console.log(postdata);
+  params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.POST;
+  params[gadgets.io.RequestParameters.POST_DATA]= postdata;
+  gadgets.io.makeRequest(url, callback, params); 
+
+  // function response(obj) {
+  //   callback(obj);
+  // };
+
+};
+
+function renderSelects(obj) {
+  console.log(obj);
+  // console.log(stringToXML(obj.data));
+  console.log(xmlToJson(stringToXML(obj.data)));
+}
+
+</script>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="col-md-1">
+
+    <div class="well">
+      <script>
+        // login user and render selects
+        login("username", "password", renderSelects);
+
+      </script>
+    </div>
+    <div class="well">
+
+    </div>
+  </div>
+
+</div>
+<script>
+
+// Force the screen to resize
+// gadgets.window.adjustHeight();
+
+
+
+</script>    
+]]></Content>
+</Module>
