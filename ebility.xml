@@ -102,11 +102,8 @@ function get_projects(session_id, user_id, callback) {
 }
 
 function makePOSTRequest(url, postdata, callback) {
-  console.log(url);
-  console.log(postdata);
   var params = {};
   postdata = gadgets.io.encodeValues(postdata);
-  console.log(postdata);
   params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.POST;
   params[gadgets.io.RequestParameters.POST_DATA]= postdata;
   gadgets.io.makeRequest(url, callback, params); 
@@ -123,7 +120,7 @@ function render_projects(obj) {
   html += '<select id=firms class=form-control>';
   
   for (var i = 0; i < firms.length; i++) {
-    firm_id = firms[i].FirmId["#text"];
+    firm_id   = firms[i].FirmId["#text"];
     firm_name = firms[i].FirmName["#text"];
     html += '<option value=' + firm_id + '>' + firm_name + '</option>';
   };
@@ -140,8 +137,41 @@ function render_projects(obj) {
 
   $('#project-info').html(html);
   console.log(mobile_sync_data);
-}
+    
+  // bind change 
+  $('#firms').change(function(){
 
+    var firms = mobile_sync_data.MobileSyncData.Firms.Firm;
+    console.log(firms);
+    var html = '';
+    for (var i = 0; i < firms.length; i++) {
+      firm_id   = firms[i].FirmId["#text"];
+      firm_name = firms[i].FirmName["#text"];
+      // look for the firm id
+      if ($(this).val() == firm_id) {
+        // the data is in clientProjects
+        projects = firms[i].ClientProjects;
+
+        // check if it's not empty
+        if (projects.MobileClientProject) {
+          mobile_project = projects.MobileClientProject;
+          for (var j = 0 ; j < mobile_project.length; j++) {
+            client_id = mobile_project[j].ClientId["#text"];
+            client_name = mobile_project[j].ClientProjectName["#text"];
+            html += '<option value=' + client_id + '>' + client_name + '</option>';
+          };
+
+        }
+        $('#projects').html(html);
+        console.log(projects);
+      }
+
+    };
+        //html += '<option value=' + firm_id + '>' + firm_name + '</option>';
+
+  });
+
+}
 </script>
 </head>
 
@@ -150,7 +180,7 @@ function render_projects(obj) {
 <div class="container">
 
     <div class="well" id="project-info">
-    hey this is something
+    Loading...
 
     </div>
     <div class="well">
