@@ -1,4 +1,3 @@
-ebility-gadget
+google calendar gadget
 ==============
 
-ebility-gadget
