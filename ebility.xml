@@ -14,10 +14,7 @@
     <![CDATA[
 
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-
-<!-- Optional theme -->
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/darkly/bootstrap.min.css">
 
 <!-- jquery -->
 <script src="//code.jquery.com/jquery-latest.min.js"></script>
@@ -42,33 +39,68 @@
 
 
 <style>
-#gadgetcell {
-  width: 175px !important;
-}
-.container {
-  padding: 0 !important;  
-}
-.col-md-1 {
-  padding: 0 !important;  
-}
-.well {
-  padding: 6px !important;
-  margin-top: -4px !important;
-}
-.table-condensed {
-  font-size: 10px !important;
-}
-.datepicker {
-  left: 0 !important;
-}
 
-input.datepicker,input.input-small {
-  width: 140px;
-}
+  body{
+    color: #ccc;
+    font-size: 12px;
+  }
 
-#button-next {
-  color: white !important;
-}
+  select, input {
+    height: 27px;
+  }
+  #gadgetcell {
+    width: 175px !important;
+  }
+  .container {
+    padding: 0 !important;  
+  }
+  .col-md-1 {
+    padding: 0 !important;  
+  }
+  .well {
+    padding: 6px;
+    margin-top: -4px !important;
+  }
+
+  .table-condensed {
+    font-size: 10px !important;
+  }
+
+  .datepicker-days {
+    margin-left: -5px;      
+  }
+
+  .datepicker {
+    left: 0 !important;
+    color: black;
+    width: 150px;
+    min-width: 140px;
+  }
+
+  input.datepicker,input.input-small {
+    width: 140px;
+  }
+
+  #button-next {
+    color: white !important;
+  }
+
+  #firms, #projects, #activities {
+    height: 27px !important;
+  }
+  .input-small {
+    color: black;
+  }
+
+  #task-description {
+    color: black;
+    margin-bottom: 6px;
+  }
+
+  #project-info {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
 
 </style>
 <script>
@@ -235,6 +267,46 @@ function render_projects(obj) {
 
 }
 
+function compose(){
+  console.log('buttonnnn');
+  console.log($('#task-date').val());
+  console.log($('#timepicker1').val());
+  console.log($('#timepicker2').val());
+  var date       = $('#task-date').val().split("\/");
+  var start_time = $('#timepicker1').val().split(" ");
+  start_time     = start_time[0].split(":");
+  var end_time   = $('#timepicker2').val().split(" ");
+  end_time       = end_time[0].split(":");
+  console.log('passing var definitions');
+
+  console.log(end_time);
+  console.log(end_time[0]);
+  console.log(end_time[1]);
+  //endTime: {year: parseInt(date[2]), month: parseInt(date[0]), date: parseInt(date[1]) },
+
+
+  var eventData = {
+    title: $("#projects option:selected" ).text() + ' ' + $("#activities option:selected" ).text() ,
+    details: $("#task-description").val() + ' [' + $("#firms option:selected" ).text() + ']',
+    location: 'somewhere',
+
+    startTime: {year: parseInt(date[2]), month: parseInt(date[0]), date: parseInt(date[1]), hour: start_time[0], minute: start_time[1], second:0 },
+
+    // Within the data model, the end time is EXCLUSIVE. So the endTime MUST
+    // be on the day after the start time.
+    endTime: {year: parseInt(date[2]), month: parseInt(date[0]), date: parseInt(date[1]), hour: end_time[0], minute: end_time[1], second:0 },
+
+    // Note that attendees MUST be sent in contact format.
+    attendees: [
+      {email: 'nperalta@gmail.com'}
+    ],
+    palette: 'lightest'
+// For more RRULE examples, please see http://www.ietf.org/rfc/rfc2445.txt
+  };
+
+  console.log(eventData);
+  google.calendar.composeEvent(eventData);
+};
 
 function today () {
 
@@ -275,7 +347,10 @@ function today () {
         <input id="timepicker2" type="text" class="input-small">
         <span class="add-on"><i class="icon-time"></i></span>
       </div>
-      <a href="#" class="btn btn-primary btn-default" id="button-next">Next <span class="glyphicon glyphicon-chevron-right"></span></a>
+      <label>Description</label><br>
+      <textarea rows="2" cols="24" id="task-description">
+      </textarea>      
+      <a href="#" class="btn btn-primary btn-default" id="button-next" onclick="compose();">Next <span class="glyphicon glyphicon-chevron-right"></span></a>
     </div>
 
 </div>
@@ -298,33 +373,6 @@ $(function(){
   $('.datepicker').datepicker();
   $('#timepicker1').timepicker();
   $('#timepicker2').timepicker();
-
-  $('#button-next').click(function(){
-    console.log('buttonnnn');
-    var date       = $('#task-date').val().split("\/");
-    var start_time = $('#timepicker1').val().split("\/");
-    var end_time   = $('#timepicker2').val().split("\/");
-
-    var eventData = {
-      title: $("#projects option:selected" ).text() + ' ' + $("#activities option:selected" ).text() ,
-      details: 'This is an ebility task of ' + $("#firms option:selected" ).text(),
-      location: 'Somewhere',
-      startTime: {year: date[2], month: date[0], date: date[1], hour: start_time[0], minute: start_time[1]},
-
-      // Within the data model, the end time is EXCLUSIVE. So the endTime MUST
-      // be on the day after the start time.
-      endTime: {year: date[2], month: date[0], date: date[1], hour: end_time[0], minute: end_time[1]},
-
-      // Note that attendees MUST be sent in contact format.
-      attendees: [
-        {email: 'nperalta@gmail.com'}
-      ],
-
-  // For more RRULE examples, please see http://www.ietf.org/rfc/rfc2445.txt
-      rrule: 'RRULE:FREQ=YEARLY'
-    };
-    google.calendar.composeEvent(eventData);
-  });  
 
 });
 
