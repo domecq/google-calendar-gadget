@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
   <ModulePrefs
-     title="Ebility gadget"
+     title="eBillity Time Tracker Gadget"
      height="700"
      width="170"
      description="Time tracker"
@@ -268,7 +268,6 @@ function render_projects(obj) {
 }
 
 function compose(){
-  console.log('buttonnnn');
   console.log($('#task-date').val());
   console.log($('#timepicker1').val());
   console.log($('#timepicker2').val());
@@ -279,6 +278,10 @@ function compose(){
   end_time       = end_time[0].split(":");
   console.log('passing var definitions');
 
+  console.log(start_time);
+  console.log(start_time[0]);
+  console.log(start_time[1]);
+
   console.log(end_time);
   console.log(end_time[0]);
   console.log(end_time[1]);
@@ -287,7 +290,7 @@ function compose(){
 
   var eventData = {
     title: $("#projects option:selected" ).text() + ' ' + $("#activities option:selected" ).text() ,
-    details: $("#task-description").val() + ' [' + $("#firms option:selected" ).text() + ']',
+    details: $("#task-description").val(),
     location: 'somewhere',
 
     startTime: {year: parseInt(date[2]), month: parseInt(date[0]), date: parseInt(date[1]), hour: start_time[0], minute: start_time[1], second:0 },
