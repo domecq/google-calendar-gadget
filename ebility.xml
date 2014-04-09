@@ -184,6 +184,12 @@ function render_projects(obj) {
   html += '<label>Firm</label>';
   html += '<select id=firms class=form-control>';
   
+  firms.sort(function(a, b){
+      if(a.FirmName < b.FirmName) return -1;
+      if(a.FirmName > b.FirmName) return 1;
+      return 0;
+  })
+    
   for (var i = 0; i < firms.length; i++) {
     firm_id   = firms[i].FirmId["#text"];
     firm_name = firms[i].FirmName["#text"];
@@ -192,7 +198,7 @@ function render_projects(obj) {
 
   html += '</select><br>';
 
-  html += '<label>Project</label>';
+  html += '<label>Customer - Project</label>';
   html += '<select id=projects class=form-control>';
   html += '</select><br>';  
 
